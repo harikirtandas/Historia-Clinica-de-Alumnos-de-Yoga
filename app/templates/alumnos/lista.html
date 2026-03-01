@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Listado de alumnos{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <h2>Listado de alumnos</h2>
+        <p>Registros cargados en la historia clínica.</p>
+    </div>
+    <div class="actions-row">
+        <a class="button ghost" href="{{ url_for('alumnos.pdf_listado') }}">PDF listado</a>
+        <a class="button" href="{{ url_for('alumnos.nuevo') }}">Agregar alumno</a>
+    </div>
+</section>
+
+<form class="search" method="get" action="{{ url_for('alumnos.listar') }}">
+    <input type="text" name="q" placeholder="Buscar por nombre, apellido, telefono o email" value="{{ q or '' }}" />
+    <button type="submit" class="button ghost">Buscar</button>
+    {% if q %}
+        <a class="button ghost" href="{{ url_for('alumnos.listar') }}">Limpiar</a>
+    {% endif %}
+</form>
+
+{% if alumnos %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Alumno</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>PDF</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for alumno in alumnos %}
+        <tr>
+            <td>{{ alumno.apellido }}, {{ alumno.nombre }}</td>
+            <td>{{ alumno.telefono }}</td>
+            <td>{{ alumno.email or "-" }}</td>
+            <td><a href="{{ url_for('alumnos.pdf', alumno_id=alumno.id) }}">PDF</a></td>
+            <td class="actions">
+                <a href="{{ url_for('alumnos.detalle', alumno_id=alumno.id) }}">Ver</a>
+                <a href="{{ url_for('alumnos.editar', alumno_id=alumno.id) }}">Editar</a>
+                <form action="{{ url_for('alumnos.eliminar', alumno_id=alumno.id) }}" method="post" class="inline-form" onsubmit="return confirm('¿Eliminar este alumno?');">
+                    <button type="submit" class="link-button">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No hay alumnos cargados.</p>
+</div>
+{% endif %}
+{% endblock %}

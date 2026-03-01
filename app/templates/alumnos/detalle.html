@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de alumno{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <h2>{{ alumno.apellido }}, {{ alumno.nombre }}</h2>
+        <p>Ficha de historia clínica.</p>
+    </div>
+    <div class="actions-row">
+        <a class="button" href="{{ url_for('alumnos.editar', alumno_id=alumno.id) }}">Editar</a>
+        <a class="button ghost" href="{{ url_for('alumnos.pdf', alumno_id=alumno.id) }}">Ver PDF</a>
+        <form action="{{ url_for('alumnos.eliminar', alumno_id=alumno.id) }}" method="post" class="inline-form" onsubmit="return confirm('¿Eliminar este alumno?');">
+            <button type="submit" class="button danger">Eliminar</button>
+        </form>
+    </div>
+</section>
+
+<div class="card">
+    <h3>Datos personales</h3>
+    <div class="detail-grid">
+        <div><strong>Nombre</strong><span>{{ alumno.nombre }}</span></div>
+        <div><strong>Apellido</strong><span>{{ alumno.apellido }}</span></div>
+        <div><strong>Fecha de nacimiento</strong><span>{{ alumno.fecha_nacimiento or "-" }}</span></div>
+        <div><strong>Edad</strong><span>{{ alumno.edad or "-" }}</span></div>
+        <div><strong>Signo zodiacal</strong><span>{{ alumno.signo_zodiaco or "-" }}</span></div>
+        <div><strong>Fecha de registro</strong><span>{{ alumno.fecha_alta }}</span></div>
+        <div><strong>Profesión</strong><span>{{ alumno.profesion or "-" }}</span></div>
+        <div><strong>Teléfono</strong><span>{{ alumno.telefono }}</span></div>
+        <div><strong>Email</strong><span>{{ alumno.email or "-" }}</span></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Salud general</h3>
+    <div class="detail-grid">
+        <div><strong>Fuma</strong><span>{{ "Sí" if alumno.fuma else "No" }}</span></div>
+        <div><strong>Presión sanguínea</strong><span>{{ alumno.presion_sanguinea or "-" }}</span></div>
+        <div><strong>Patologías físicas</strong><span>{{ alumno.patologias_fisicas or "-" }}</span></div>
+        <div><strong>Patologías psicológicas</strong><span>{{ alumno.patologias_psicologicas or "-" }}</span></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Medicaciones</h3>
+    <div class="detail-grid">
+        <div><strong>Toma medicación</strong><span>{{ "Sí" if alumno.toma_medicacion else "No" }}</span></div>
+        <div><strong>Detalle</strong><span>{{ alumno.medicacion or "-" }}</span></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Actividad física</h3>
+    <div class="detail-grid">
+        <div><strong>Practicó yoga</strong><span>{{ "Sí" if alumno.practica_yoga_previamente else "No" }}</span></div>
+        <div><strong>Actividad física</strong><span>{{ "Sí" if alumno.realiza_actividad_fisica else "No" }}</span></div>
+        <div><strong>Motivo</strong><span>{{ alumno.motivo_practica or "-" }}</span></div>
+        <div><strong>Cómo nos conoció</strong><span>{{ alumno.como_nos_conocio or "-" }}</span></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Observaciones</h3>
+    <p>{{ alumno.observaciones_generales or "-" }}</p>
+</div>
+{% endblock %}
