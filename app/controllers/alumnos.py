@@ -2,7 +2,6 @@ from datetime import date, datetime
 import textwrap
 
 from flask import Blueprint, redirect, render_template, request, url_for
-from fpdf import FPDF
 from sqlalchemy import or_
 
 from app import db
@@ -175,6 +174,13 @@ def _pdf_bytes(pdf):
         return output.encode("latin1")
     return bytes(output)
 
+
+def _new_pdf():
+    # Import diferido: si falla la dependencia de PDF, la app puede iniciar igual.
+    from fpdf import FPDF
+
+    return FPDF()
+
 @alumnos_bp.route("/")
 def home():
     return redirect(url_for("alumnos.listar"))
@@ -268,12 +274,12 @@ def detalle(alumno_id):
 def pdf(alumno_id):
     alumno = Alumno.query.get_or_404(alumno_id)
 
-    pdf = FPDF()
+    pdf = _new_pdf()
     pdf.set_margins(15, 15, 15)
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, "Historia Clinica - Alumno", ln=True)
+    pdf.cell(0, 10, "Historia Clínica - Alumno", ln=True)
 
     pdf.set_font("Helvetica", "", 12)
     pdf.cell(0, 8, f"Alumno: {alumno.apellido}, {alumno.nombre}", ln=True)
@@ -285,7 +291,7 @@ def pdf(alumno_id):
     )
     pdf.cell(0, 8, f"Edad: {alumno.edad or '-'}", ln=True)
     pdf.cell(0, 8, f"Signo zodiacal: {alumno.signo_zodiaco or '-'}", ln=True)
-    pdf.cell(0, 8, f"Telefono: {alumno.telefono}", ln=True)
+    pdf.cell(0, 8, f"Teléfono: {alumno.telefono}", ln=True)
     pdf.cell(0, 8, f"Email: {alumno.email or '-'}", ln=True)
     pdf.cell(0, 8, f"Fecha de registro: {alumno.fecha_alta}", ln=True)
     pdf.ln(4)
@@ -302,25 +308,25 @@ def pdf(alumno_id):
         "Salud general",
         [
             ("Fuma", "Si" if alumno.fuma else "No"),
-            ("Presion sanguinea", alumno.presion_sanguinea or "-"),
-            ("Patologias fisicas", alumno.patologias_fisicas or "-"),
-            ("Patologias psicologicas", alumno.patologias_psicologicas or "-"),
+            ("Presión sanguínea", alumno.presion_sanguinea or "-"),
+            ("Patologías físicas", alumno.patologias_fisicas or "-"),
+            ("Patologías psicológicas", alumno.patologias_psicologicas or "-"),
         ],
     )
     section(
         "Medicaciones",
         [
-            ("Toma medicacion", "Si" if alumno.toma_medicacion else "No"),
+            ("Toma medicación", "Si" if alumno.toma_medicacion else "No"),
             ("Detalle", alumno.medicacion or "-"),
         ],
     )
     section(
-        "Actividad fisica",
+        "Actividad física",
         [
-            ("Practico yoga", "Si" if alumno.practica_yoga_previamente else "No"),
-            ("Actividad fisica", "Si" if alumno.realiza_actividad_fisica else "No"),
+            ("Practicó yoga", "Si" if alumno.practica_yoga_previamente else "No"),
+            ("Actividad física", "Si" if alumno.realiza_actividad_fisica else "No"),
             ("Motivo", alumno.motivo_practica or "-"),
-            ("Como nos conocio", alumno.como_nos_conocio or "-"),
+            ("Cómo nos conocio", alumno.como_nos_conocio or "-"),
         ],
     )
     section("Observaciones", [("Notas", alumno.observaciones_generales or "-")])
@@ -340,7 +346,7 @@ def pdf(alumno_id):
 def pdf_listado():
     alumnos = Alumno.query.order_by(Alumno.apellido.asc(), Alumno.nombre.asc()).all()
 
-    pdf = FPDF()
+    pdf = _new_pdf()
     pdf.set_margins(15, 15, 15)
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
