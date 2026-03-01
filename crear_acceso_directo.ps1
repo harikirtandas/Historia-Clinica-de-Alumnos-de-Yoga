@@ -1,5 +1,5 @@
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$batPath = Join-Path $repoRoot "iniciar_app_windows.bat"
+$batPath = Join-Path $repoRoot "iniciar_app_oculto.vbs"
 $desktop = [Environment]::GetFolderPath("Desktop")
 $shortcutPath = Join-Path $desktop "HCA Yoga.lnk"
 
