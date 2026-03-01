@@ -145,6 +145,31 @@ http://127.0.0.1:5000/
 ```
 
 El acceso directo abre la app y el navegador automáticamente.
+Nota: el script usa `venv\Scripts\python.exe`, por lo que el entorno virtual debe existir en la carpeta del proyecto.
+
+### ✅ Checklist de validación en Windows
+
+1. Abrir PowerShell en la carpeta del proyecto.
+2. Ejecutar:
+
+```powershell
+.\crear_acceso_directo.ps1
+```
+
+3. Verificar que se creó `HCA Yoga.lnk` en el escritorio.
+4. Hacer doble clic en `HCA Yoga.lnk`.
+5. Confirmar que abre `http://127.0.0.1:5000/` y carga la app.
+6. Probar un PDF (listado o detalle) para validar `fpdf2`.
+
+## 🛠 Troubleshooting rápido
+
+Si `python run.py` no levanta después de cambiar de máquina o hacer pull:
+
+1. Borrar y recrear `venv`.
+2. Reinstalar dependencias con `pip install -r requirements.txt`.
+3. Volver a probar `python run.py`.
+
+Esto suele resolver entornos inconsistentes entre macOS y Windows.
 
 ## 🧾 PDF
 
