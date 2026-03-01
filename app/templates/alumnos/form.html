@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% if alumno_id %}
+    {% set titulo = "Editar alumno" %}
+{% else %}
+    {% set titulo = "Nuevo alumno" %}
+{% endif %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <h2>{{ titulo }}</h2>
+        <p>Completar la historia clínica del alumno.</p>
+    </div>
+    <a class="button ghost" href="{{ url_for('alumnos.listar') }}">Volver al listado</a>
+</section>
+
+{% if errores %}
+<div class="alert">
+    <strong>Faltan campos obligatorios:</strong>
+    {{ errores | join(", ") }}
+</div>
+{% endif %}
+
+<form method="post" action="{% if alumno_id %}{{ url_for('alumnos.actualizar', alumno_id=alumno_id) }}{% else %}{{ url_for('alumnos.crear') }}{% endif %}" class="form">
+    <fieldset>
+        <legend>Datos personales</legend>
+        <p class="helper">Completar fecha de nacimiento o edad manual.</p>
+        <div class="grid">
+            <label>
+                Nombre *
+                <input type="text" name="nombre" value="{{ form_data.get('nombre', '') }}" required />
+            </label>
+            <label>
+                Apellido *
+                <input type="text" name="apellido" value="{{ form_data.get('apellido', '') }}" required />
+            </label>
+            <label>
+                Fecha de nacimiento
+                <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" value="{{ form_data.get('fecha_nacimiento', '') }}" />
+            </label>
+            <label>
+                Edad
+                <input type="number" name="edad" id="edad" min="0" value="{{ form_data.get('edad', '') }}" />
+            </label>
+            <label>
+                Signo zodiacal
+                <input type="text" name="signo_zodiaco" id="signo_zodiaco" value="{{ form_data.get('signo_zodiaco', '') }}" />
+            </label>
+            <label>
+                Profesión
+                <input type="text" name="profesion" value="{{ form_data.get('profesion', '') }}" />
+            </label>
+            <label>
+                Teléfono *
+                <input type="text" name="telefono" value="{{ form_data.get('telefono', '') }}" required />
+            </label>
+            <label>
+                Email
+                <input type="email" name="email" value="{{ form_data.get('email', '') }}" />
+            </label>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Salud general</legend>
+        <div class="grid">
+            <label class="checkbox">
+                <input type="checkbox" name="fuma" {% if form_data.get('fuma') %}checked{% endif %} />
+                Fuma
+            </label>
+            <label>
+                Presión sanguínea
+                <input type="text" name="presion_sanguinea" value="{{ form_data.get('presion_sanguinea', '') }}" />
+            </label>
+            <label>
+                Patologías físicas
+                <textarea name="patologias_fisicas" rows="3">{{ form_data.get('patologias_fisicas', '') }}</textarea>
+            </label>
+            <label>
+                Patologías psicológicas
+                <textarea name="patologias_psicologicas" rows="3">{{ form_data.get('patologias_psicologicas', '') }}</textarea>
+            </label>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Medicaciones</legend>
+        <div class="grid">
+            <label class="checkbox">
+                <input type="checkbox" name="toma_medicacion" {% if form_data.get('toma_medicacion') %}checked{% endif %} />
+                Toma medicación
+            </label>
+            <label>
+                Detalle de medicación
+                <textarea name="medicacion" rows="3">{{ form_data.get('medicacion', '') }}</textarea>
+            </label>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Actividad física</legend>
+        <div class="grid">
+            <label class="checkbox">
+                <input type="checkbox" name="practica_yoga_previamente" {% if form_data.get('practica_yoga_previamente') %}checked{% endif %} />
+                Practicó yoga previamente
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="realiza_actividad_fisica" {% if form_data.get('realiza_actividad_fisica') %}checked{% endif %} />
+                Realiza actividad física
+            </label>
+            <label>
+                Motivo de la práctica
+                <textarea name="motivo_practica" rows="3">{{ form_data.get('motivo_practica', '') }}</textarea>
+            </label>
+            <label>
+                ¿Cómo nos conoció?
+                <input type="text" name="como_nos_conocio" value="{{ form_data.get('como_nos_conocio', '') }}" />
+            </label>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Observaciones</legend>
+        <label>
+            Observaciones generales
+            <textarea name="observaciones_generales" rows="4">{{ form_data.get('observaciones_generales', '') }}</textarea>
+        </label>
+    </fieldset>
+
+    <div class="form-actions">
+        <button type="submit" class="button">Guardar</button>
+        <a class="button ghost" href="{{ url_for('alumnos.listar') }}">Cancelar</a>
+    </div>
+</form>
+
+<script>
+  const fechaInput = document.getElementById("fecha_nacimiento");
+  const edadInput = document.getElementById("edad");
+  const signoInput = document.getElementById("signo_zodiaco");
+
+  function calcularEdad(fecha) {
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - fecha.getFullYear();
+    const m = hoy.getMonth() - fecha.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < fecha.getDate())) {
+      edad -= 1;
+    }
+    return edad;
+  }
+
+  function signoZodiaco(fecha) {
+    const d = fecha.getDate();
+    const m = fecha.getMonth() + 1;
+    if ((m === 3 && d >= 21) || (m === 4 && d <= 19)) return "Aries";
+    if ((m === 4 && d >= 20) || (m === 5 && d <= 20)) return "Tauro";
+    if ((m === 5 && d >= 21) || (m === 6 && d <= 20)) return "Geminis";
+    if ((m === 6 && d >= 21) || (m === 7 && d <= 22)) return "Cancer";
+    if ((m === 7 && d >= 23) || (m === 8 && d <= 22)) return "Leo";
+    if ((m === 8 && d >= 23) || (m === 9 && d <= 22)) return "Virgo";
+    if ((m === 9 && d >= 23) || (m === 10 && d <= 22)) return "Libra";
+    if ((m === 10 && d >= 23) || (m === 11 && d <= 21)) return "Escorpio";
+    if ((m === 11 && d >= 22) || (m === 12 && d <= 21)) return "Sagitario";
+    if ((m === 12 && d >= 22) || (m === 1 && d <= 19)) return "Capricornio";
+    if ((m === 1 && d >= 20) || (m === 2 && d <= 18)) return "Acuario";
+    return "Piscis";
+  }
+
+  function actualizarAuto() {
+    if (!fechaInput.value) {
+      return;
+    }
+    const fecha = new Date(fechaInput.value + "T00:00:00");
+    if (!Number.isNaN(fecha.getTime())) {
+      edadInput.value = calcularEdad(fecha);
+      signoInput.value = signoZodiaco(fecha);
+    }
+  }
+
+  fechaInput.addEventListener("change", actualizarAuto);
+  fechaInput.addEventListener("blur", actualizarAuto);
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}HCA Yoga{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1 class="site-title">HCA Estudio de Yoga</h1>
+        <nav class="site-nav">
+          <a href="{{ url_for('alumnos.listar') }}">Alumnos</a>
+          <span class="nav-separator">|</span>
+          <a href="{{ url_for('alumnos.nuevo') }}">Nuevo alumno</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">{% block content %}{% endblock %}</main>
+  </body>
+</html>
