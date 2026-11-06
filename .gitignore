@@ -3,3 +3,6 @@ __pycache__/
 .env
 *.pyc
 .DS_Store
+# Base de datos local (datos de alumnos): nunca al repo
+instance/
+*.db
